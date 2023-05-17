@@ -1,28 +1,45 @@
-import { MyContext } from "../../.."
+import { MyContext } from "../../..";
 import { tasksService } from "../../services/tasks.service";
 
+export class TasksCommand {
+  tasksService: tasksService;
 
+  constructor() {
+    this.tasksService = new tasksService();
+  }
 
-export const todayCommands = async (ctx: MyContext) => {
+  todayCommand = async (ctx: MyContext) => {
+    await ctx.reply("today");
+    const tasksArray = await this.tasksService?.getTodayTasks();
 
-    const tasksServiceInstance = new tasksService()
+    await ctx.replyWithSticker(
+      "https://cdn.tlgrm.app/stickers/ccd/a8d/ccda8d5d-d492-4393-8bb7-e33f77c24907/192/1.webp"
+    );
+    if (tasksArray && tasksArray?.length > 0) {
+      for (let index = 0; index < tasksArray.length; index++) {
+        const task = tasksArray[index];
+        ctx.reply(`${task?.icon ?? "👨‍💻"} - ${task?.title}`);
+      }
+    } else {
+      ctx.reply("nothing 🤯");
+    }
+  };
 
-    const tasksArray = await tasksServiceInstance.getTodayTasks() ?? []
+  allTasks = async (ctx: MyContext) => {
+    await ctx.reply("All your tasks");
+    const tasksArray = await this.tasksService?.getAllTasks();
 
-    return ctx.reply('today')
-              .then(()=>{
-                 ctx.replyWithSticker('https://cdn.tlgrm.app/stickers/ccd/a8d/ccda8d5d-d492-4393-8bb7-e33f77c24907/192/1.webp')
-              })
-              .then(() => {
-                  for (let index = 0; index < tasksArray.length; index += 2) {
-                    const task = tasksArray[index];
-                    const taskSecond = tasksArray[index + 1]
-                    
-                    if (taskSecond) {
-                        ctx.reply(`${task?.icon ?? "👨‍💻"} - ${task?.title}    ${taskSecond?.icon ?? "👨‍💻"} - ${taskSecond?.title}`);
-                    }else {
-                        ctx.reply(`${task?.icon ?? "👨‍💻"} - ${task?.title}`)
-                    }
-                  }
-              })
+    await ctx.replyWithSticker(
+      "https://cdn.tlgrm.app/stickers/ccd/a8d/ccda8d5d-d492-4393-8bb7-e33f77c24907/192/1.webp"
+    );
+    if (tasksArray && tasksArray?.length > 0) {
+      for (let index = 0; index < tasksArray.length; index++) {
+        const task = tasksArray[index];
+        ctx.reply(`${task?.icon ?? "👨‍💻"} - ${task?.title}`);
+      }
+    } else {
+      ctx.reply("nothing 🤯");
+    }
+  };
+
 }

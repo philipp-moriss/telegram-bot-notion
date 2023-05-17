@@ -2,7 +2,7 @@ import { Context, session } from "telegraf";
 import { Bot } from "./src/MainBot/bot";
 import { createScene } from "./src/scence/test/test.scene";
 import { startCommands } from "./src/commands/start/start.command";
-import { todayCommands } from "./src/commands/today/today.command";
+import { TasksCommand } from "./src/commands/today/today.command";
 require("dotenv").config();
 
 
@@ -21,11 +21,14 @@ async function main() {
     session()
   ];
 
+  const tasksCommands = new TasksCommand()
+
   const scenes = [createScene];
 
   const commands = [
     ['start', startCommands],
-    ['today', todayCommands],
+    ['today', tasksCommands.todayCommand],
+    ['all', tasksCommands.allTasks],
     ['fullStop', (ctx: MyContext) => {
       ctx.session = { }
       bot.bot.stop('EndSession')

@@ -1,11 +1,11 @@
 import { Client } from "@notionhq/client";
+import { pageDateParser } from "../helpers/dateparsers/page.dateparser";
 
 export class tasksService {
   notion: Client;
 
   constructor() {
-
-    const notion = new Client({ auth: secretKey });
+    const notion = new Client({ auth: process.env.NOTION_SECRET_KEY });
 
     if (!notion) {
       throw new Error("Notion didn't initialized");
@@ -16,29 +16,39 @@ export class tasksService {
 
   async getTodayTasks() {
     try {
-  
+      const formattedDate = new Date().toISOString().slice(0, 10);
+
       const fullOrPartialPages = await this.notion.databases.query({
-        database_id: allTasksDatabase,
+        database_id: process.env.ALL_TASKS_DATABASE ?? "non-db-id",
+        filter: {
+          property: "Date",
+          date: {
+            equals: formattedDate,
+          },
+        },
       });
-      //@ts-ignore
+
       const tasksArray = fullOrPartialPages.results.map((page) => {
-        //@ts-ignore
-        const icon = page?.icon?.emoji;
-        //@ts-ignore
-        const title = page.properties.Name.title.map((property) => {
-          return property["plain_text"];
-        })[0];
-
-        const task = {
-          icon,
-          title,
-        };
-
-        return task;
+        return pageDateParser(page);
       });
 
-      return tasksArray
+      return tasksArray;
+    } catch (error) {
+      console.log("ERROR", error);
+    }
+  }
 
+  async getAllTasks() {
+    try {
+      const fullOrPartialPages = await this.notion.databases.query({
+        database_id: process.env.ALL_TASKS_DATABASE ?? "non-db-id",
+      });
+
+      const tasksArray = fullOrPartialPages.results.map((page) => {
+        return pageDateParser(page);
+      });
+
+      return tasksArray;
     } catch (error) {
       console.log("ERROR", error);
     }

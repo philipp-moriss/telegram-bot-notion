@@ -17,8 +17,6 @@ export const createScene = new WizardScene<WizzardContext>(
     "first-scene",
     (ctx) => {
       ctx.sendMessage("Enter phone number")
-      console.log('aaaaaaaaaaaaaaaa');
-      
       ctx.wizard.next();
     },
     (ctx) => {
