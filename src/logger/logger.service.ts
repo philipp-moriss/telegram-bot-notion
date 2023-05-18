@@ -4,7 +4,9 @@ export class LoggerService {
     private logger: Logger<ILogObj>
 
     constructor() {
-        this.logger = new Logger<ILogObj>()
+        this.logger = new Logger<ILogObj>({
+            prettyLogTemplate: '{{logLevelName}} {{dateIsoStr}}  {{fileNameWithLine}} '
+        })
     }
 
     log (...args: unknown[]) {

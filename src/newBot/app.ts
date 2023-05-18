@@ -1,8 +1,9 @@
 //@ts-ignore
 import { Stage } from 'telegraf/scenes';
-import { Context, Telegraf } from "telegraf";
+import { Composer, Context, Telegraf } from "telegraf";
 
 import { LoggerService } from "../logger/logger.service.js";
+import { TasksController } from '../tasks/tasks.controller.js';
 
 
 interface SessionData {
@@ -18,20 +19,25 @@ export class App {
     bot : Telegraf<AppContext>
     stage :  any;
     logger : LoggerService
-
-    constructor(logger: LoggerService) {
+    taskController: TasksController
+    constructor(
+        logger: LoggerService,
+        taskController : TasksController
+        ) {
         const token = process.env.BOT_KEY as string;
 
         this.bot = new Telegraf<AppContext>(token); 
         this.stage = new Stage()
         this.logger = logger
+        this.taskController = taskController
     }
 
 
     async useEvents() {
-        this.bot.on('message', (ctx : AppContext) => {
-            ctx.reply("i am don't understand you")
-          })
+        this.bot.use(this.taskController.commands)
+        // this.bot.on('message', (ctx : AppContext) => {
+        //     ctx.reply("i am don't understand you")
+        //   })
     }
 
     public async init() {
