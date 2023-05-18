@@ -14,12 +14,12 @@ export interface BotInterface {
 
     stage :  any;
 
-    connectScenes : (scenes : WizardScene<any>[]) => Promise<void>
+    useScenes : (scenes : WizardScene<any>[]) => Promise<void>
 
-    connectMiddleware : (middlewares : Array<Middleware<Context>>) => Promise<void>
+    useMiddleware : (middlewares : Array<Middleware<Context>>) => Promise<void>
 
 
-    connectCommands : (commands : Array<CommandType>) => Promise<void>
+    useCommands : (commands : Array<CommandType>) => Promise<void>
     
-    launchBot () : void
+    initBot () : void
 }

@@ -43,17 +43,17 @@ async function main() {
 
   const bot = new Bot(token);
 
-  await bot.connectMiddleware(middleware);
+  await bot.useMiddleware(middleware);
 
-  await bot.connectScenes(scenes);
-
-  //@ts-ignore
-  await bot.connectCommands(commands)
+  await bot.useScenes(scenes);
 
   //@ts-ignore
-  await bot.connectEvents(events)
+  await bot.useCommands(commands)
 
-  bot.launchBot()
+  //@ts-ignore
+  await bot.useEvents(events)
+
+  bot.initBot()
 }
 
 main();

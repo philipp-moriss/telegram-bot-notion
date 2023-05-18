@@ -18,7 +18,7 @@ export class tasksService {
     try {
       const formattedDate = new Date().toISOString().slice(0, 10);
 
-      const fullOrPartialPages = await this.notion.databases.query({
+      const responsePage = await this.notion.databases.query({
         database_id: process.env.ALL_TASKS_DATABASE ?? "non-db-id",
         filter: {
           property: "Date",
@@ -28,7 +28,7 @@ export class tasksService {
         },
       });
 
-      const tasksArray = fullOrPartialPages.results.map((page) => {
+      const tasksArray = responsePage.results.map((page) => {
         return pageDateParser(page);
       });
 
@@ -40,11 +40,11 @@ export class tasksService {
 
   async getAllTasks() {
     try {
-      const fullOrPartialPages = await this.notion.databases.query({
+      const responsePage = await this.notion.databases.query({
         database_id: process.env.ALL_TASKS_DATABASE ?? "non-db-id",
       });
 
-      const tasksArray = fullOrPartialPages.results.map((page) => {
+      const tasksArray = responsePage.results.map((page) => {
         return pageDateParser(page);
       });
 

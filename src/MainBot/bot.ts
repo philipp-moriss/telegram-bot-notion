@@ -26,7 +26,7 @@ export class Bot implements BotInterface {
     }
 
 
-    public async connectScenes (scenes: WizardScene<any>[]) {
+    public async useScenes (scenes: WizardScene<any>[]) {
 
         this.bot.use(this.stage.middleware())
 
@@ -35,14 +35,14 @@ export class Bot implements BotInterface {
         })
     };
 
-    public async connectMiddleware (middlewares: Middleware<Context<Update>>[]) {
+    public async useMiddleware (middlewares: Middleware<Context<Update>>[]) {
         middlewares.forEach((middleware) => {
             this.bot.use(middleware)
         })
         
     };
 
-    public async connectCommands(commands : Array<CommandType>) {
+    public async useCommands(commands : Array<CommandType>) {
         commands.forEach((command)=> {
             //@ts-ignore
             this.bot.command(command[0], command[1])
@@ -50,7 +50,7 @@ export class Bot implements BotInterface {
           
     }
 
-    public async connectEvents(commands : Array<CommandType>) {
+    public async useEvents(commands : Array<CommandType>) {
         commands.forEach((event)=> {
             //@ts-ignore
             this.bot.on(event[0], event[1])
@@ -58,8 +58,8 @@ export class Bot implements BotInterface {
           
     }
 
-    public launchBot(): void {
-        this.bot.launch()
+    public async initBot(): Promise<void> {
+       await this.bot.launch()
             .then(()=> {
                 console.log('bot Started');
             })
