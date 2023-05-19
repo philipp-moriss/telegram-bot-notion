@@ -1,9 +1,11 @@
+import { IExceptionFilter } from './../errors/exception.filter.interface';
 //@ts-ignore
 import { Stage } from 'telegraf/scenes';
 import { Composer, Context, Telegraf } from "telegraf";
 
 import { LoggerService } from "../logger/logger.service.js";
 import { TasksController } from '../tasks/tasks.controller.js';
+import { BotError } from '../errors/bot.error';
 
 
 interface SessionData {
@@ -20,9 +22,12 @@ export class App {
     stage :  any;
     logger : LoggerService
     taskController: TasksController
+    exceptionFilter: IExceptionFilter
+
     constructor(
         logger: LoggerService,
-        taskController : TasksController
+        taskController : TasksController,
+        exceptionFilter: IExceptionFilter,
         ) {
         const token = process.env.BOT_KEY as string;
 
@@ -30,14 +35,16 @@ export class App {
         this.stage = new Stage()
         this.logger = logger
         this.taskController = taskController
+        this.exceptionFilter = exceptionFilter
     }
 
 
     async useEvents() {
         this.bot.use(this.taskController.commands)
-        // this.bot.on('message', (ctx : AppContext) => {
-        //     ctx.reply("i am don't understand you")
-        //   })
+    }
+
+    useExceptionFilters (error: BotError & Error) {
+        this.exceptionFilter.catch.bind(this.exceptionFilter, error)(this.bot.telegram)
     }
 
     public async init() {
@@ -46,7 +53,7 @@ export class App {
             await this.bot.launch()
             this.logger.log('bot Started');
         } catch (error) {
-            this.logger.error('Something wrong', error);
+            this.useExceptionFilters(error as Error & BotError)
         }
     }
 }

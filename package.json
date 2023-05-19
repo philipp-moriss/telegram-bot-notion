@@ -7,8 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "watch": "nodemon index.ts",
-    "watch-new": "nodemon main.ts"
+    "watch": "nodemon main.ts"
   },
   "author": "",
   "license": "ISC",
